@@ -1,0 +1,17 @@
+{
+  "name": "chunk",
+  "repo": "bredele/chunk",
+  "description": "file system chunk utility",
+  "version": "0.0.0",
+  "keywords": [],
+  "dependencies": {
+
+  },
+  "development": {
+  },
+  "license": "MIT",
+  "main": "index.js",
+  "scripts": [
+    "index.js"
+  ]
+}
