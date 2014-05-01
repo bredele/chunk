@@ -33,30 +33,11 @@
 
 	  	var trace = new Date();
 	  	chunk(files[0])
-	  	  .on('blob', function(result) {
-	  	  	// console.log(result);
-	  	  	// olivier = result.slice(0, 800);
-	  	  	// console.log(result.slice(0, 800));
-	  	  	test(result);
-	  	  	console.log(new Date() - trace);
+	  	  .on('chunk', function(result, index) {
+	  	  	console.log(index, result);
 	  	  });
 	  }
 
-	  function send(chunk) {
-	  	foo.send(chunk);
-	  }
-
-	  function test(binary) {
-	  	// var idx = Math.ceil(binary.byteLength / 800);
-	  	var idx = Math.ceil(binary.length / 800);
-	  	for (var i = 0; i < idx; i++) {
-	  		var start = i * 800;
-	  		console.log(start, Math.min(start + 800, binary.length));
-	  		var chunk = binary.slice(start,  Math.min(start + 800, binary.length));
-	  		console.log(chunk);
-	 	  	//foo.send(chunk); // too fast
-	  	}
-	  }
 	</script>
 </body>
 </html>
