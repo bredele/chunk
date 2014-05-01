@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>chunk</title>
+</head>
+<body>
+	<input type="file" id="files" name="file" />
+	<button onclick="read()">read</button>
+	<script src="../build/build.js"></script>
+	<script>
+	  var sys = document.querySelector('#files');
+	  var chunk = require('chunk');
+
+	  function read() {
+	  	var files = sys.files;
+	  	if (!files.length) {
+	  	  alert('Please select a file!');
+	  	  return;
+	  	}
+
+	  	chunk(files[0])
+	  	  .on('blob', function(result) {
+	  	  	console.log('result', result);
+	  	  });
+	  }
+
+	</script>
+</body>
+</html>
