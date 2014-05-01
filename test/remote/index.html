@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>remote channel</title>
+</head>
+<body>
+	<input type="file" id="files" name="file" />
+	<button onclick="read()">read</button>
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="/app/build.js"></script>
+	<script>
+	  var peer = require('peer');
+	  var signal = require('signal');
+	  var channel = require('channel');
+	  var chunk = require('chunk');
+	  var sys = document.querySelector('#files');
+
+	  var foo = peer();
+	  foo.set("optional",[{"DtlsSrtpKeyAgreement":true}]); // ??
+	  foo.on('message', function(data) {
+	  	console.log(data);
+	  });
+	  foo.use(channel('skype'));
+	  foo.use(signal('room'));
+
+	  function read() {
+	  	var files = sys.files;
+	  	if (!files.length) {
+	  	  alert('Please select a file!');
+	  	  return;
+	  	}
+
+	  	var trace = new Date();
+	  	chunk(files[0])
+	  	  .on('blob', function(result) {
+	  	  	// console.log(result);
+	  	  	// olivier = result.slice(0, 800);
+	  	  	// console.log(result.slice(0, 800));
+	  	  	test(result);
+	  	  	console.log(new Date() - trace);
+	  	  });
+	  }
+
+	  function send(chunk) {
+	  	foo.send(chunk);
+	  }
+
+	  function test(binary) {
+	  	// var idx = Math.ceil(binary.byteLength / 800);
+	  	var idx = Math.ceil(binary.length / 800);
+	  	for (var i = 0; i < idx; i++) {
+	  		var start = i * 800;
+	  		console.log(start, Math.min(start + 800, binary.length));
+	  		var chunk = binary.slice(start,  Math.min(start + 800, binary.length));
+	  		console.log(chunk);
+	 	  	//foo.send(chunk); // too fast
+	  	}
+	  }
+	</script>
+</body>
+</html>

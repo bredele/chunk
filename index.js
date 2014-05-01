@@ -9,6 +9,15 @@ var Queue = require('emitter-queue');
 
 
 /**
+ * Static variables.
+ * @api private
+ */
+
+var size = 800;
+var range = 1024000;
+
+
+/**
  * Expose 'Chunk'
  */
 
@@ -22,51 +31,51 @@ module.exports = Chunk;
 
 function Chunk(file, range) {
   if(!(this instanceof Chunk)) return new Chunk(file, range);
-  var _this = this;
-  // this.reader = new FileReader();
-
-  // // should we use onload?
-  // this.reader.onloadend = function(evt) {
-  //   console.log('onloaded');
-  //   var target = evt.target;
-  //   if (target.readyState === FileReader.DONE) {
-  //     _this.queue('blob', target.result);
-  //   }
-  // };
+  // NOTE: we could may be get better performance with
+  // a pool of file reader
+  this.reader = new FileReader();
+  this.file = file;
+  this.total = file.size;
   if(file) this.read(file, range);
 }
 
+
+// Emitter queue
 
 Emitter(Chunk.prototype);
 Queue(Chunk.prototype);
 
 
-Chunk.prototype.read = function(file, range) {
-  var reader = new FileReader();
+Chunk.prototype.slice = function(begin, end) {
+  var blob = this.file.slice(begin, end);
+  this.reader.readAsDataURL(blob);
+};
+
+Chunk.prototype.encode = function(binary) {
+};
+
+Chunk.prototype.read = function(file) {
+  var size = this.total;
   var start = 0;
-  var finished = false;
-  var size = file.size;
-  range = range || 1024000;
+  var _this = this;
   var read = function() {
     if(size > range) {
-      var blob = file.slice(start, start + range);
-      reader.readAsArrayBuffer(blob);
-      size = size - range;
+      _this.slice(start, start + range);
       start = start + range;
+      size = size - range;
     } else {
-      var blob = file.slice(start, start + size);
-      reader.readAsArrayBuffer(blob);
-      finished = true;
+      _this.slice(start, start + size);
+      size = 0;
     }
   };
-  reader.onload = function() {
-    // can read again
-    if(!finished) {
-      read();
-    }
+  this.reader.onload = function(event) {
+    var result = event.target.result;
+    _this.queue('blob', event.target.result);
+    if(size) read();
   };
   read();
 };
+
 
 
   // range = range || 1200;

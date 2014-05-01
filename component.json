@@ -6,12 +6,13 @@
   "keywords": [],
   "dependencies": {
     "component/emitter": "^1.1.2",
-    "bredele/emitter-queue": "*",
+    "bredele/emitter-queue": "*"
+  },
+  "development": {
     "bredele/peer": "~0.1.1",
     "bredele/channel": "~0.0.1",
     "bredele/signal": "~0.0.1"
   },
-  "development": {},
   "license": "MIT",
   "main": "index.js",
   "scripts": [
